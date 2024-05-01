@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Turnera</string>
+    <string name="mail">E-mail</string>
+    <string name="contra">Contraseña</string>
+    <string name="login">Iniciar sesion</string>
+</resources>
