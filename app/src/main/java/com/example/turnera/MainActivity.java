@@ -11,13 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -34,7 +28,6 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private EditText user, pass;
-    private Button login, facebook, insta;
     private ProgressDialog carga;
 
     @Override
@@ -44,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         user = findViewById(R.id.user);
         pass = findViewById(R.id.pass);
-        login = findViewById(R.id.login);
+        Button login = findViewById(R.id.login);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,50 +65,44 @@ public class MainActivity extends AppCompatActivity {
             carga.show();
 
             StringRequest sr = new StringRequest(Request.Method.POST, Constant.LOGIN_URL,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String s) {
-                            Log.d("Response", s);
+                    s -> {
+                        Log.d("Response", s);
 
-                            if (s.equals("success")){
+                        if (s.equals("success")){
 
-                                SharedPreferences sp = MainActivity.this.getSharedPreferences(Constant.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+                            SharedPreferences sp = MainActivity.this.getSharedPreferences(Constant.SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
-                                SharedPreferences.Editor e = sp.edit();
-                                e.putString(Constant.USER_SHARED_PREF, USR);
-                                e.apply();
+                            SharedPreferences.Editor e = sp.edit();
+                            e.putString(Constant.USER_SHARED_PREF, USR);
+                            e.apply();
 
-                                carga.dismiss();
+                            carga.dismiss();
 
-                                Intent i = new Intent(v.getContext(), HomeActivity.class);
-                                startActivity(i);
+                            Intent i = new Intent(v.getContext(), HomeActivity.class);
+                            startActivity(i);
 
-                                Toast.makeText(v.getContext(), "Inicio correcto.", Toast.LENGTH_SHORT).show();
-                            } else if (s.equals("failure")) {
+                            Toast.makeText(v.getContext(), "Inicio correcto.", Toast.LENGTH_SHORT).show();
+                        } else if (s.equals("failure")) {
 
-                                Toast.makeText(v.getContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
-                                carga.dismiss();
+                            Toast.makeText(v.getContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
+                            carga.dismiss();
 
-                            } else {
+                        } else {
 
-                                Toast.makeText(v.getContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
-                                carga.dismiss();
-
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-
-                            Toast.makeText(v.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(v.getContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
                             carga.dismiss();
 
                         }
+                    },
+                    volleyError -> {
+
+                        Toast.makeText(v.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                        carga.dismiss();
+
                     }){
 
                 @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
+                protected Map<String, String> getParams() {
 
                     Map<String, String> params = new HashMap<>();
                     params.put(Constant.KEY_USER, USR);
