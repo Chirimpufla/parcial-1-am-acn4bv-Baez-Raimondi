@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private ImageView avatar;
+    private ImageButton avatar;
     private TextView user, nombreCompleto, servicio, fecha, hora;
     private Button turno, detalle;
 
@@ -23,6 +23,13 @@ public class HomeActivity extends AppCompatActivity {
 
         avatar = findViewById(R.id.avatar);
         avatar.setImageResource(R.drawable.avatar);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), ProfileActivity.class);
+                startActivity(i);
+            }
+        });
 
         user = findViewById(R.id.nombre);
         if(savedInstanceState == null){

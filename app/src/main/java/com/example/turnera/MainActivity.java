@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(v.getContext(), HomeActivity.class);
                     i.putExtra("user", user.getText().toString());
                     startActivity(i);
+                    carga.dismiss();
 
                     Toast.makeText(v.getContext(), "Inicio exitoso", Toast.LENGTH_SHORT).show();
                 }
