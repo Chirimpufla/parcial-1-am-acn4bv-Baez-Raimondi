@@ -3,4 +3,7 @@
     <string name="mail">E-mail</string>
     <string name="contra">Contraseña</string>
     <string name="login">Iniciar sesion</string>
+    <string name="turno">Turnos pendientes</string>
+    <string name="nuevo">Pedir turno</string>
+    <string name="detalle">Detalles</string>
 </resources>

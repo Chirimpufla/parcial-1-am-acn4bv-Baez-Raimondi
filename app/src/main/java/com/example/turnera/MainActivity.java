@@ -1,5 +1,7 @@
 package com.example.turnera;
 
+import static com.example.turnera.R.drawable.logo;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,10 +33,15 @@ public class MainActivity extends AppCompatActivity {
     private EditText user, pass;
     private ProgressDialog carga;
 
+    private ImageView logo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        logo = findViewById(R.id.logo);
+        logo.setImageResource(R.drawable.logo);
+
 
         user = findViewById(R.id.user);
         pass = findViewById(R.id.pass);
@@ -42,12 +50,35 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login(v);
+                //Por problemas de conexion el boton login solo esta de adorno en este ejemplo
+                //La funcion login no crashea, pero por problemas con el router termino en desuso
+                final String USR = user.getText().toString().trim();
+                final String PASS = pass.getText().toString().trim();
+
+                if(USR.isEmpty()){
+                    user.setError("Por favor ingrese su mail");
+                    user.requestFocus();
+                } else if (PASS.isEmpty()) {
+                    pass.setError("Por favor ingrese su contraseña");
+                    pass.requestFocus();
+                } else {
+                    carga = new ProgressDialog(v.getContext());
+                    carga.setTitle("Iniciando sesion");
+                    carga.setMessage("Por favor espere...");
+                    carga.show();
+
+                    Intent i = new Intent(v.getContext(), HomeActivity.class);
+                    i.putExtra("user", user.getText().toString());
+                    startActivity(i);
+
+                    Toast.makeText(v.getContext(), "Inicio exitoso", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
 
+    //Esta funcion fue preparada para usarse con PHP y MySQL
     private void login(View v){
         final String USR = user.getText().toString().trim();
         final String PASS = pass.getText().toString().trim();
