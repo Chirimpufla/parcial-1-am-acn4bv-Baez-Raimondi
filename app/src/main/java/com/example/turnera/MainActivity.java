@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
@@ -32,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText user, pass;
     private ProgressDialog carga;
-
     private ImageView logo;
+    private Button login, registro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,38 +43,24 @@ public class MainActivity extends AppCompatActivity {
         logo = findViewById(R.id.logo);
         logo.setImageResource(R.drawable.logo);
 
-
         user = findViewById(R.id.user);
         pass = findViewById(R.id.pass);
-        Button login = findViewById(R.id.login);
+
+        login = findViewById(R.id.login);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Por problemas de conexion el boton login solo esta de adorno en este ejemplo
-                //La funcion login no crashea, pero por problemas con el router termino en desuso
-                final String USR = user.getText().toString().trim();
-                final String PASS = pass.getText().toString().trim();
+                login(v);
+            }
+        });
 
-                if(USR.isEmpty()){
-                    user.setError("Por favor ingrese su mail");
-                    user.requestFocus();
-                } else if (PASS.isEmpty()) {
-                    pass.setError("Por favor ingrese su contraseña");
-                    pass.requestFocus();
-                } else {
-                    carga = new ProgressDialog(v.getContext());
-                    carga.setTitle("Iniciando sesion");
-                    carga.setMessage("Por favor espere...");
-                    carga.show();
-
-                    Intent i = new Intent(v.getContext(), HomeActivity.class);
-                    i.putExtra("user", user.getText().toString());
-                    startActivity(i);
-                    carga.dismiss();
-
-                    Toast.makeText(v.getContext(), "Inicio exitoso", Toast.LENGTH_SHORT).show();
-                }
+        registro = findViewById(R.id.register);
+        registro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), registerActivity.class);
+                startActivity(i);
             }
         });
 
@@ -96,51 +83,40 @@ public class MainActivity extends AppCompatActivity {
             carga.setMessage("Por favor espere...");
             carga.show();
 
-            StringRequest sr = new StringRequest(Request.Method.POST, Constant.LOGIN_URL,
-                    s -> {
-                        Log.d("Response", s);
-
-                        if (s.equals("success")){
-
-                            SharedPreferences sp = MainActivity.this.getSharedPreferences(Constant.SHARED_PREF_NAME, Context.MODE_PRIVATE);
-
-                            SharedPreferences.Editor e = sp.edit();
-                            e.putString(Constant.USER_SHARED_PREF, USR);
-                            e.apply();
-
-                            carga.dismiss();
-
-                            Intent i = new Intent(v.getContext(), HomeActivity.class);
-                            startActivity(i);
-
-                            Toast.makeText(v.getContext(), "Inicio correcto.", Toast.LENGTH_SHORT).show();
-                        } else if (s.equals("failure")) {
-
-                            Toast.makeText(v.getContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
-                            carga.dismiss();
-
-                        } else {
-
-                            Toast.makeText(v.getContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
-                            carga.dismiss();
-
-                        }
-                    },
-                    volleyError -> {
-
-                        Toast.makeText(v.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
-                        carga.dismiss();
-
-                    }){
-
+            StringRequest sr = new StringRequest(Request.Method.POST, Constant.LOGIN_URL, new Response.Listener<String>() {
                 @Override
-                protected Map<String, String> getParams() {
+                public void onResponse(String s) {
 
+                    Log.d("Response", s);
+
+                    if (s.contains("1")){
+                        carga.dismiss();
+                        Intent i = new Intent(v.getContext(), HomeActivity.class);
+                        i.putExtra(Constant.KEY_USER, user.getText().toString());
+                        startActivity(i);
+                        Toast.makeText(v.getContext(), "Inicio Exitoso!!!", Toast.LENGTH_SHORT).show();
+                    } else if (s.contains("0")){
+                        carga.dismiss();
+                        Toast.makeText(v.getContext(), "El usuario o contraseña son incorrectos", Toast.LENGTH_LONG).show();
+                    } else {
+                        carga.dismiss();
+                        Toast.makeText(v.getContext() ,s, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    carga.dismiss();
+                    Toast.makeText(v.getContext(), "Error al conectarse con el servidor.", Toast.LENGTH_LONG).show();
+                }
+            }){
+                @Nullable
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
                     params.put(Constant.KEY_USER, USR);
                     params.put(Constant.KEY_PASS, PASS);
                     return params;
-
                 }
             };
 

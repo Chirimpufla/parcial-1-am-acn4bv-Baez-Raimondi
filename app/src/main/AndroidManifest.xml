@@ -13,9 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Turnera"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".DetailActivity"
+            android:name=".registerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Turnos"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"

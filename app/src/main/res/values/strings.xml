@@ -6,4 +6,11 @@
     <string name="turno">Turnos pendientes</string>
     <string name="nuevo">Pedir turno</string>
     <string name="detalle">Detalles</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="telefono">Nª de telefono</string>
+    <string name="cambiar">Cambiar Contraseña</string>
+    <string name="guardar">Guardar Cambios</string>
+    <string name="misTurnos">Mis Turnos</string>
+    <string name="register">Registrarse</string>
 </resources>

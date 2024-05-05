@@ -1,19 +1,22 @@
 package com.example.turnera;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
     private ImageButton avatar;
-    private TextView user, nombreCompleto, servicio, fecha, hora;
+    private TextView user, nombreCompleto;
     private Button turno, detalle;
 
     @Override
@@ -21,12 +24,20 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Bundle extraPass = getIntent().getExtras();
+        assert extraPass != null;
+        if (extraPass.getString("pass") != null){
+            Toast.makeText(this, "Contraseña modificada", Toast.LENGTH_LONG).show();
+        }
+
         avatar = findViewById(R.id.avatar);
         avatar.setImageResource(R.drawable.avatar);
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), ProfileActivity.class);
+                i.putExtra("user", user.getText().toString());
+                i.putExtra("nombre", nombreCompleto.getText().toString());
                 startActivity(i);
             }
         });
@@ -46,41 +57,23 @@ public class HomeActivity extends AppCompatActivity {
         nombreCompleto = findViewById(R.id.apellido);
         nombreCompleto.setText("John Smith");
 
-        String nombre = "John";
-        String apellido = "Smith";
-
         turno = findViewById(R.id.nuevoturno);
         turno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), FormActivity.class);
-                i.putExtra("nombre", nombre);
-                i.putExtra("apellido", apellido);
+                Intent i = new Intent(v.getContext(), Turnos.class);
                 startActivity(i);
             }
         });
 
-        fecha = findViewById(R.id.fecha);
-        fecha.setText("22/5/2024");
-
-        hora = findViewById(R.id.hora);
-        hora.setText("15.00");
-
-        servicio = findViewById(R.id.servicio);
-        servicio.setText("Corte de pelo");
-
-        detalle = findViewById(R.id.detalle);
+        detalle = findViewById(R.id.mis_turnos);
         detalle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), DetailActivity.class);
-                i.putExtra("fecha", fecha.getText().toString());
-                i.putExtra("hora", hora.getText().toString());
-                i.putExtra("servicio", servicio.getText().toString());
+                Intent i = new Intent(v.getContext(), Turnos.class);
+                i.putExtra("user", user.getText().toString());
                 startActivity(i);
             }
         });
-
-
     }
 }
